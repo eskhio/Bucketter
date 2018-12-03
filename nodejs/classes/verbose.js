@@ -29,24 +29,27 @@ class verbose {
     constructor(name){
         this.name   = name;
     }
-
     static print(text){
-        
         console.log(text);
     }
-    static printSection(text){
-        console.log("-------------");
-        this.print(text);
-        console.log("-------------");
+    static printTitle(text){
+        console.log(text+"\n\t");
+    }
+    static printSeparator(){
+        console.log("\n-----------------------------\n");
     }
     static printStep(text){
-        process.stdout.write(`-> ${text}\t... `);
+        process.stdout.write(text+"\t");
+        process.stdout.write("...\r");
     }
     static printOK(text){
         console.log(colors.FgGreen+text+"\x1b[0m");
     }
     static printNOK(text){
         console.log(colors.FgRed+text+"\x1b[0m");
-    }    
+    }
+    static printInline(text, color){ 
+        process.stdout.write(colors.FgCyan+text+"\x1b[0m");
+    }     
 }
 module.exports = verbose;
