@@ -1,4 +1,4 @@
-nodejs/node_modules/
+node_modules/
 nodejs/doc
-nodejs/tmp/
+tmp/
 .vscode/

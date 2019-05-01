@@ -1,46 +1,25 @@
 // Requires
-const fs = require('fs');
+const fs = require("fs");
 
 const https = require("./nodejs/classes/https");
-const verbose = require('./nodejs/classes/verbose');
-const document = require('./nodejs/classes/document');
+const verbose = require("./nodejs/classes/verbose");
 
+const parser = require("./nodejs/classes/parser");
 // Consts
 const sources = JSON.parse(fs.readFileSync("./sources.js", "utf8"));
 
+// eslint-disable-next-line require-jsdoc
 async function main() {
-    try {
-        
-        verbose.printTitle("Source fetching");
-        let updatedRawSources = await https.browseAndUpdateSourcesDocuments(sources);
-        await parseSourcesMostUsedSelectors(updatedRawSources);
-        /*parseSourcesMostUsedElements(updatedRawSources);*/
-
-    } catch (e) {
-        verbose.printNOK(e);
-    }
-}
-function parseSourcesUsedSelectors(updatedRawSources = updatedRawSources) {
-    verbose.printTitle("Source used selectors parsing");
-    for (parsedSourcesDoc of updatedRawSources) {
-        let parsedDoc = new document(parsedSourcesDoc.document, parsedSourcesDoc.url)
-        parsedDoc.getSelectorsOccurences();
-    }
-}
-async function parseSourcesMostUsedSelectors(updatedRawSources = updatedRawSources) {
-    verbose.printTitle("Source most used selectors parsing");
-    for (parsedSourcesDoc of updatedRawSources) {
-        let parsedDoc = new document(parsedSourcesDoc.document, parsedSourcesDoc.url)
-        await parsedDoc.getMostUsedSelectors();
-    }
-}
-
-function parseSourcesMostUsedElements(updatedRawSources = updatedRawSources) {
-    verbose.printTitle("Source most used elements parsing");
-    for (parsedSourcesDoc of updatedRawSources) {
-        let parsedDoc = new document(parsedSourcesDoc.document, parsedSourcesDoc.url)
-        parsedDoc.getMostUsedElements();
-    }
+	try {
+		verbose.printTitle("Source fetching");
+		const updatedRawSources = await https.browseAndUpdateSourcesDocuments(sources);
+		// await parser.parseSourcesMostUsedSelectors(updatedRawSources);
+		// await parser.parseSourcesMostUsedElements(updatedRawSources);
+		await parser.findTitleWithinDocuments(updatedRawSources);
+		await parser.findMostUsedTopics(updatedRawSources);
+	} catch (e) {
+		verbose.printNOK(e);
+	}
 }
 
 main();

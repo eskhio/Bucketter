@@ -1,58 +1,88 @@
-const moment = require('moment');
-
-const colors = {
-    "Reset": "\x1b[0m",
-    "Bright": "\x1b[1m",
-    "Dim": "\x1b[2m",
-    "Underscore": "\x1b[4m",
-    "Blink": "\x1b[5m",
-    "Reverse": "\x1b[7m",
-    "Hidden": "\x1b[8m",
-    "FgBlack": "\x1b[30m",
-    "FgRed": "\x1b[31m",
-    "FgGreen": "\x1b[32m",
-    "FgYellow": "\x1b[33m",
-    "FgBlue": "\x1b[34m",
-    "FgMagenta": "\x1b[35m",
-    "FgCyan": "\x1b[36m",
-    "FgWhite": "\x1b[37m",
-    "BgBlack": "\x1b[40m",
-    "BgRed": "\x1b[41m",
-    "BgGreen": "\x1b[42m",
-    "BgYellow": "\x1b[43m",
-    "BgBlue": "\x1b[44m",
-    "BgMagenta": "\x1b[45",
-    "BgCyan": "\x1b[46m",
-    "BgWhite": "\x1b[47m"
-}
-
+const moment = require("moment");
+const chalk = require("chalk");
+const log = console.log;
+const _progress = require("cli-progress");
+/**
+ * @description Verbose methods
+ * @date 2019-04-26
+ * @class verbose
+ */
 class verbose {
+	/**
+	 *Creates an instance of verbose.
+	 * @date 2019-04-26
+	 * @param {String} name Name of this verbose
+	 */
+	constructor(name) {
+		this.name = name;
+	}
+	/**
+	 * @description
+	 * @date 2019-04-26
+	 * @param {String} text
+	 */
+	static print(text) {
+		log("[" + moment(new Date()).format("HH:mm:ss:SSS") + "] " + text);
+	}
 
-    constructor(name) {
-        this.name = name;
-    }
-    static print(text) {
-        console.log("["+moment(new Date()).format("HH:mm:ss:SSS")+"] "+text);
-    }
-
-    static printTitle(text) {
-        console.log("\n[ - " + text + " - ]\n");
-    }
-    static printSeparator() {
-        console.log("["+moment(new Date()).format("HH:mm:ss:SSS")+"] \n-----------------------------\n");
-    }
-    static printStep(text) {
-        process.stdout.write(text + "\t");
-        process.stdout.write("...\r");
-    }
-    static printOK(text) {
-        console.log("["+moment(new Date()).format("HH:mm:ss:SSS")+"] "+colors.FgGreen + text + "\x1b[0m"+colors.Reset);
-    }
-    static printNOK(text) {
-        console.log("["+moment(new Date()).format("HH:mm:ss:SSS")+"] "+colors.FgRed + text + "\x1b[0m"+colors.Reset);
-    }
-    static printInline(text, color) {
-        process.stdout.write(colors.FgCyan + text + "\x1b[0m");
-    }
+	/**
+	 * @description Print a title
+	 * @date 2019-04-26
+	 * @static
+	 * @param {String} text
+	 */
+	static printTitle(text) {
+		log("\n[ - " + text + " - ]\n");
+	}
+	/**
+	 * @description Print a separator
+	 * @date 2019-04-26
+	 */
+	static printSeparator() {
+		log("[" + moment(new Date()).format("HH:mm:ss:SSS") + "] \n-----------------------------\n");
+	}
+	/**
+	 * @description Print a step
+	 * @date 2019-04-26
+	 * @param {String} text
+	 */
+	static printStep(text) {
+		process.stdout.write(text + "\t");
+		process.stdout.write("...\r");
+	}
+	/**
+	 * @description Print an OK message
+	 * @date 2019-04-26
+	 * @param {String} text
+	 */
+	static printOK(text) {
+		log(chalk.green("[" + moment(new Date()).format("HH:mm:ss:SSS") + "] " + text));
+	}
+	/**
+	 * @description Print a NOK message
+	 * @date 2019-04-26
+	 * @param {String} text
+	 */
+	static printNOK(text) {
+		log(chalk.red("[" + moment(new Date()).format("HH:mm:ss:SSS") + "] " + text));
+	}
+	/**
+	 * @description New progress bar
+	 * @date 2019-04-26
+	 * @param {String} action Current action
+	 * @param {Int} valueLen Total value to reach
+	 * @param {String} text Text to show
+	 * @return {Object} A progress bar
+	 */
+	static newProgress(action, valueLen, text) {
+		return new _progress.Bar({
+			format: "[" + moment(new Date()).format("HH:mm:ss:SSS") + "] " +
+			action + chalk.green(" {bar}") + " {percentage}% | ETA: {eta}s | {value}/" + valueLen,
+			hideCursor: true,
+			stopOnComplete: true,
+			clearOnComplete: true,
+			etaBuffer: 200,
+		}, _progress.Presets.rect);
+	}
 }
 module.exports = verbose;

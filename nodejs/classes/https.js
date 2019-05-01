@@ -1,9 +1,14 @@
-const v = require('./verbose');
-const u = require('./utils');
-const request = require('request');
-const maxRetries = 10;
 
+const v = require("./verbose");
+const u = require("./utils");
+const request = require("request");
+const Document = require("./document");
 
+/**
+ * @description Handles HTTP requests
+ * @date 2019-03-21
+ * @class https
+ */
 class https {
 	/**
 	 * @description Performs an async HTTP request towards an URL and fetch the response
@@ -12,13 +17,14 @@ class https {
 	 * @param {String} url The HTTP URL to fetch the response from
 	 * @param {String} reqDesc The description of the request
 	 * @param {String} expectedStatus The status expected from the request
+	 * @param {String} errorFn The error to raise when fail
 	 */
 	static async get(url, reqDesc, expectedStatus, errorFn) {
-		let response = await new Promise(function (resolve, reject) {
+		const response = await new Promise(function(resolve, reject) {
 			v.printStep(reqDesc);
-			let t = u.tGo();
-			request(url, function (error, response) {
-				let reqError = reqDesc + " -> " + error;
+			const t = u.tGo();
+			request(url, function(error, response) {
+				const reqError = reqDesc + " -> " + error;
 				if (error) {
 					v.printNOK(reqError);
 					if (errorFn) errorFn();
@@ -28,7 +34,7 @@ class https {
 					resolve(response);
 				}
 			});
-		}).catch(error => v.printNOK(error));
+		}).catch((error) => v.printNOK(error));
 
 		this.assertExpectedResponseStatus(url, expectedStatus, response, errorFn ? errorFn : null);
 
@@ -40,7 +46,8 @@ class https {
 	 * @static
 	 * @param {String} url The HTTP URL to fetch the response from
 	 * @param {String} expectedStatus The response' status expected from the request
-	 * @param {String} responseStatus The response's status obtained from the HTTP request towards url
+	 * @param {String} response The response's status obtained from the HTTP request towards url
+	 * @param {String} errorFn The error to raise when fail
 	 */
 	static assertExpectedResponseStatus(url = url, expectedStatus = expectedStatus, response = response, errorFn = errorFn) {
 		expectedStatus = expectedStatus.join("|");
@@ -53,19 +60,17 @@ class https {
 	/**
 	 * @description
 	 * @date 2018-12-10
-	 * @static 
-	 * @param [sources=sources]
-	 * @returns {Object} { sourceContent.url, sourceContent.document, sourceContent.updated } 
+	 * @static
+	 * @param {Array} sources Sources to browse
+	 * @return {Object} { sourceContent.url, sourceContent.document, sourceContent.updated }
 	 */
 	static async browseAndUpdateSourcesDocuments(sources = sources) {
-		
-		let sourcesContent = [];
+		const sourcesContent = [];
 
-		for (let source of sources) {
-			
-			let sourceContent = {};
+		for (const source of sources) {
+			const sourceContent = {};
 			sourceContent.url = u.cleanSourceName(source);
-			sourceContent.document = await https.get(source, "Fetching " + source + "\t", ["200"]);
+			sourceContent.document = new Document(await https.get(source, "Fetching " + source + "\t", ["200"]), u.cleanSourceName(source));
 			sourceContent.updated = u.getLogTime();
 			sourcesContent.push(sourceContent);
 		}
