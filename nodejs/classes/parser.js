@@ -43,30 +43,10 @@ class parser {
 			parsedDoc.documentTitles = [];
 			for (const mayTitle of await parsedDoc.document.getMostUsedSelectors()) {
 				if (new RegExp(mayTitleString, "i").test(mayTitle.class)) {
-					parsedDoc.documentTitles = parsedDoc.documentTitles.concat(parsedDoc.document.getElementsText(mayTitle.class));
-					continue
-				}
-			}
-		}
-	}
-	/**
-	 * @description Find the most used selectors within some HTML documents
-	 * @date 2019-03-21
-	 * @param {Object} docs Documents to find the title text from
-	 */
-	static async findMostUsedTopics(docs = docs ) {
-		Verbose.printTitle("Source's title parsing");
-		const mayTitleString = /title|titre/;
-
-		for (const parsedDoc of docs) {
-			for (let docTitle of parsedDoc.documentTitles) {
-				docTitle = docTitle.replace(/\s(la|les?|des?|pour|une?|aux?|que|sur|du|il)\b/gi, " ");
-				console.log(docTitle);
-				for (const parsedDocToCheck of docs) {
-					if (Object.is(parsedDoc, parsedDocToCheck)) continue;
-					for (const docTitleToCheck of parsedDoc.documentTitles) {
-
-					}
+					parsedDoc.documentTitles = parsedDoc.documentTitles.concat(
+						parsedDoc.document.getElementsText(mayTitle.class)
+					);
+					continue;
 				}
 			}
 		}

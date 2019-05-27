@@ -1,5 +1,5 @@
 const v = require("./verbose");
-const moment = require("moment");
+const Moment = require("moment");
 const fs = require("fs");
 
 /**
@@ -14,26 +14,29 @@ class utils {
 	 * @return {Date} A timer.
 	 */
 	static tGo() {
-		return new moment();
+		return new Moment();
 	}
 	/**
 	 * @description
 	 * @date 2019-03-17
 	 * @static
-	 * @param start
-	 * @param [actionFinished=""]
+	 * @param {timestamp} start Time started
+	 * @param {string} actionFinished Action to display as ended
 	 */
 	static tStop(start, actionFinished = "") {
-		const end = new moment();
-		const duration = moment(end - start);
+		const end = new Moment();
+		const duration = new Moment(end - start);
 		v.printStep(actionFinished);
-		v.printOK(actionFinished + "\t -> \t " + duration + "ms [Start: " + moment(start).format("HH:mm:ss:SSS") + "]");
+		v.printOK(
+			actionFinished + "\t -> \t " +
+			duration + "ms [Start: " + new Moment(start).format("HH:mm:ss:SSS") + "]"
+		);
 	}
 	/**
 	 * @description Chain async steps one after the other
 	 * @date 2018-12-03
-	 * @param [steps] Array of steps to asynchroniselydsfsfsgh do
-	 * @return Promise of every steps done
+	 * @param {Array} steps Array of steps to asynchroniselydsfsfsgh do
+	 * @return {Boolean}
 	 */
 	static async doAsync(steps) {
 		for (step of Array.from(steps)) {
@@ -42,10 +45,9 @@ class utils {
 		return true;
 	}
 	/**
-	 * @description
+	 * @description Get the text length of some nodes
 	 * @date 2018-12-03
-	 * @param nodesToMeasure
-	 * @returns
+	 * @param {Array} nodesToMeasure
 	 */
 	async parseSelectorsTextLength(nodesToMeasure) {
 		return nodesToMeasure.map((obj, index) => {
@@ -53,15 +55,17 @@ class utils {
 			muso = mus.occurences;
 			musc = mus.class;
 			const textLengthOThisSelector = parsedDoc.getTextLengthOfASelector("." + musc).textLength;
-			v.print("-> " + (index + 1) + " - " + musc + ": " + muso + " occurences for " + textLengthOThisSelector + " chars");
+			v.print("-> " + (index + 1) + " - " +
+				musc + ": " +
+				muso + " occurences for " + textLengthOThisSelector + " chars"
+			);
 		});
 	}
 	/**
-	 * @description
+	 * @description Sleep a bit
 	 * @date 2019-03-17
-	 * @static
-	 * @param timeout
-	 * @returns
+	 * @param {int} timeout Time to sleep
+	 * @return {Object} A promise to wait for
 	 */
 	static wait(timeout) {
 		return new Promise((resolve) => {
@@ -73,9 +77,8 @@ class utils {
 	/**
 	 * @description
 	 * @date 2019-03-17
-	 * @static
-	 * @param sourceName
-	 * @returns
+	 * @param {String} sourceName The source name
+	 * @return {String} A cleaned source name
 	 */
 	static cleanSourceName(sourceName) {
 		return sourceName.match(/https?:\/{2}(w{3}\.)?(\w+)/)[2];
@@ -83,9 +86,8 @@ class utils {
 	/**
 	 * @description
 	 * @date 2019-03-17
-	 * @static
-	 * @param path
-	 * @param content
+	 * @param {String} path Path to save to
+	 * @param {String} content Content to write
 	 */
 	static saveContent(path, content) {
 		fs.writeFile(path, content, {
@@ -97,13 +99,12 @@ class utils {
 		});
 	}
 	/**
-	 * @description
+	 * @description Returns a time marker
 	 * @date 2019-03-17
-	 * @static
-	 * @returns
+	 * @return {Object} A time
 	 */
 	static getLogTime() {
-		return moment(new Date()).format("MMDDYYYYHHmmss");
+		return new Moment(new Date()).format("MMDDYYYYHHmmss");
 	}
 	/**
 	 * @description Clean a string

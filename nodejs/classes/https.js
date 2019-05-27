@@ -70,11 +70,13 @@ class https {
 		for (const source of sources) {
 			const sourceContent = {};
 			sourceContent.url = u.cleanSourceName(source);
-			sourceContent.document = new Document(await https.get(source, "Fetching " + source + "\t", ["200"]), u.cleanSourceName(source));
+			sourceContent.document = new Document(
+				await https.get(source, "Fetching " + source + "\t", ["200"]),
+				u.cleanSourceName(source)
+			);
 			sourceContent.updated = u.getLogTime();
 			sourcesContent.push(sourceContent);
 		}
-
 		u.saveContent("./sourcesContent.js", JSON.stringify(sourcesContent));
 
 		return sourcesContent;

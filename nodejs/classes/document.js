@@ -155,7 +155,9 @@ class document {
 	 * @return {object} An object containing the most used elements in the current doc
 	 */
 	getElementsText(selector = selector) {
-		return Array.from(this.document.querySelectorAll("."+selector)).map((_) => { return utils.cleanString(_.textContent); } );
+		return Array.from(this.document.querySelectorAll("."+selector)).map((_) => {
+			return utils.cleanString(_.textContent);
+		} );
 	}
 	/**
 	 * @description Erase dupes key from obj.
