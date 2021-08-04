@@ -9,7 +9,7 @@
     "jsdom": "^13.2.0",
     "moment": "^2.24.0",
     "npm": "^6.9.0",
-    "tar": "^4.4.8"
+    "tar": "^4.4.15"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
